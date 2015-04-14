@@ -10,7 +10,10 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -52,10 +55,24 @@ public class TwitmixAdapter extends CursorAdapter {
      */
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        // our view is pretty simple here --- just a text view
-        // we'll keep the UI functional with a simple (and slow!) binding.
 
-        TextView tv = (TextView)view;
-        tv.setText(convertCursorRowToUXFormat(cursor));
+        ImageView imageView = (ImageView) view.findViewById(R.id.list_item_image);
+
+        String imageUrl = cursor.getString(PostFragment.COL_TWITMIX_IMAGE);
+        //Loading image from below url into imageView
+        Picasso.with(context)
+                .load(imageUrl)
+                .resize(350, 350)
+                .into(imageView);
+
+        TextView titleView = (TextView) view.findViewById(R.id.list_item_title_textview);
+        titleView.setText(cursor.getString(PostFragment.COL_TWITMIX_TITLE));
+
+        TextView authorDateView = (TextView) view.findViewById(R.id.list_item_author_textview);
+        authorDateView.setText(cursor.getString(PostFragment.COL_TWITMIX_AUTHOR) +
+                " - " + cursor.getString(PostFragment.COL_TWITMIX_DATE));
+
+//        TextView tv = (TextView)view;
+//        tv.setText(convertCursorRowToUXFormat(cursor));
     }
 }

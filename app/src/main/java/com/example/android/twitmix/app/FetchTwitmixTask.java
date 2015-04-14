@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.example.android.twitmix.app.data.TwitmixContract.TwitmixEntry;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -171,7 +172,11 @@ public class FetchTwitmixTask extends AsyncTask<String, Void, Void> {
             }
 
             twitmixJsonStr = buffer.toString();
-            getPostDataFromJson(twitmixJsonStr , categoryQuery);
+
+            String withCharacters = StringEscapeUtils.unescapeHtml4(twitmixJsonStr);
+            String noHTMLString = withCharacters.replaceAll("\\<.*?>","");
+
+            getPostDataFromJson(noHTMLString , categoryQuery);
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
