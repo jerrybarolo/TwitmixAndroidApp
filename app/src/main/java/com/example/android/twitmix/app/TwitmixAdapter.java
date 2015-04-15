@@ -22,22 +22,28 @@ import com.squareup.picasso.Picasso;
  */
 public class TwitmixAdapter extends CursorAdapter {
 
-    private final String LOG_TAG = TwitmixAdapter.class.getSimpleName();
 
     public TwitmixAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
 
-    /*
-        This is ported from FetchTwitmixTask --- but now we go straight from the cursor to the
-        string.
-     */
-    private String convertCursorRowToUXFormat(Cursor cursor) {
+    private static final int VIEW_TYPE_COUNT = 2;
+    private static final int VIEW_TYPE_LAST_POST = 0;
+    private static final int VIEW_TYPE_OLDER_POST = 1;
 
-        // Put The Image here
-        return cursor.getString(PostFragment.COL_TWITMIX_TITLE) +
-                " - " + cursor.getString(PostFragment.COL_TWITMIX_AUTHOR) +
-                " - " + cursor.getString(PostFragment.COL_TWITMIX_DATE);
+    /**
+     * Cache of the children views for a list item.
+     */
+    public static class ViewHolder {
+        public final ImageView imageView;
+        public final TextView authorView;
+        public final TextView titleView;
+
+        public ViewHolder(View view) {
+            imageView = (ImageView) view.findViewById(R.id.list_item_image);
+            titleView = (TextView) view.findViewById(R.id.list_item_title_textview);
+            authorView = (TextView) view.findViewById(R.id.list_item_author_textview);
+        }
     }
 
     /*
@@ -45,7 +51,25 @@ public class TwitmixAdapter extends CursorAdapter {
      */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_news_post, parent, false);
+
+        // Choose the layout type
+        int viewType = getItemViewType(cursor.getPosition());
+        int layoutId = -1;
+        switch (viewType) {
+            case VIEW_TYPE_LAST_POST: {
+                layoutId = R.layout.list_news_last_post;
+                break;
+            }
+            case VIEW_TYPE_OLDER_POST: {
+                layoutId = R.layout.list_news_post;
+                break;
+            }
+        }
+
+        View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
+
+        ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
 
         return view;
     }
@@ -56,23 +80,27 @@ public class TwitmixAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.list_item_image);
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         String imageUrl = cursor.getString(PostFragment.COL_TWITMIX_IMAGE);
         //Loading image from below url into imageView
         Picasso.with(context)
                 .load(imageUrl)
                 .resize(350, 350)
-                .into(imageView);
+                .into(viewHolder.imageView);
 
-        TextView titleView = (TextView) view.findViewById(R.id.list_item_title_textview);
-        titleView.setText(cursor.getString(PostFragment.COL_TWITMIX_TITLE));
+        viewHolder.titleView.setText(cursor.getString(PostFragment.COL_TWITMIX_TITLE));
+        viewHolder.authorView.setText(cursor.getString(PostFragment.COL_TWITMIX_AUTHOR) +
+                " - " + cursor.getString(PostFragment.COL_TWITMIX_DATE).substring(0,10));
+    }
 
-        TextView authorDateView = (TextView) view.findViewById(R.id.list_item_author_textview);
-        authorDateView.setText(cursor.getString(PostFragment.COL_TWITMIX_AUTHOR) +
-                " - " + cursor.getString(PostFragment.COL_TWITMIX_DATE));
+    @Override
+    public int getItemViewType(int position) {
+        return position == 0 ? VIEW_TYPE_LAST_POST : VIEW_TYPE_OLDER_POST;
+    }
 
-//        TextView tv = (TextView)view;
-//        tv.setText(convertCursorRowToUXFormat(cursor));
+    @Override
+    public int getViewTypeCount() {
+        return VIEW_TYPE_COUNT;
     }
 }

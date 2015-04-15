@@ -31,6 +31,8 @@
     <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
     <string name="pref_category_label_interviews">Interviste</string>
 
+    <string name="pref_category_label_concerts">Concerti</string>
+
     <!-- Key name for temperature unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_category_key" translatable="true">category</string>
 
@@ -39,5 +41,7 @@
 
     <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
     <string name="pref_category_interviews" translatable="true">interviste</string>
+
+    <string name="pref_category_concerts" translatable="true">concerti-live</string>
 
 </resources>
