@@ -6,23 +6,37 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.twitmix.app.data.DetailFragment;
+
 
 public class MainActivity extends ActionBarActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
-    private final String POSTFRAGMENT_TAG = "PFTAG";
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
+    private boolean mTwoPane;
     private String mCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mCategory = Utility.getPreferredCategory(this);
         super.onCreate(savedInstanceState);
+
+        mCategory = Utility.getPreferredCategory(this);
+
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PostFragment(), POSTFRAGMENT_TAG)
-                    .commit();
+
+        if (findViewById(R.id.post_detail_container) != null) {
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.post_detail_container, new DetailFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
+            }
+        }
+        else
+        {
+            mTwoPane = false;
         }
     }
 
@@ -55,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
         String category = Utility.getPreferredCategory( this );
         // update the location in our second pane using the fragment manager
         if (category != null && !category.equals(mCategory)) {
-            PostFragment pf = (PostFragment)getSupportFragmentManager().findFragmentByTag(POSTFRAGMENT_TAG);
+            PostFragment pf = (PostFragment)getSupportFragmentManager().findFragmentById(R.id.listview_post);
             if ( null != pf ) {
                 pf.onCategoryChanged();
             }
