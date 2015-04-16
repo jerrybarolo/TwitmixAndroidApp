@@ -1,15 +1,14 @@
 package com.example.android.twitmix.app;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.android.twitmix.app.data.DetailFragment;
 
-
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements PostFragment.Callback {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
@@ -73,7 +72,36 @@ public class MainActivity extends ActionBarActivity {
             if ( null != pf ) {
                 pf.onCategoryChanged();
             }
+
+            DetailFragment df = (DetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+            if ( null != df ) {
+                df.onCategoryChanged(category);
+            }
+
             mCategory = category;
+        }
+    }
+
+    @Override
+    public void onItemSelected(Uri contentUri) {
+        if (mTwoPane)
+        {
+        // In two-pane mode, show the detail view in this activity by
+        // adding or replacing the detail fragment using a fragment transaction.
+        Bundle args = new Bundle();
+        args.putParcelable(DetailFragment.DETAIL_URI, contentUri);
+
+        DetailFragment fragment = new DetailFragment();
+        fragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.post_detail_container, fragment, DETAILFRAGMENT_TAG)
+                .commit();
+        }
+        else
+        {
+            Intent intent = new Intent(this, DetailActivity.class).setData(contentUri);
+            startActivity(intent);
         }
     }
 }

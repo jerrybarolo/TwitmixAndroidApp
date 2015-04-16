@@ -4,7 +4,6 @@ package com.example.android.twitmix.app;
  * Created by jerrybarolo on 06/04/15.
  */
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,6 +52,18 @@ public class PostFragment extends Fragment implements LoaderManager.LoaderCallba
     static final int COL_TWITMIX_CONTENT = 7;
 
     private TwitmixAdapter mTwitmixAdapter;
+
+    /**
+      * A callback interface that all activities containing this fragment must
+      * implement. This mechanism allows activities to be notified of item
+      * selections.
+      */
+    public interface Callback {
+        /**
+          * DetailFragmentCallback for when an item has been selected.
+          */
+        public void onItemSelected(Uri postUri);
+    }
 
     public PostFragment() {
 
@@ -106,10 +117,14 @@ public class PostFragment extends Fragment implements LoaderManager.LoaderCallba
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
                     String categorySetting = Utility.getPreferredCategory(getActivity());
-                    String postId = cursor.getString(COL_TWITMIX_ID);
-                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .setData(TwitmixContract.TwitmixEntry.buildTwitmixCategoryWithId(categorySetting, postId));
-                    startActivity(intent);
+                    //String postId = cursor.getString(COL_TWITMIX_ID);
+                    //Intent intent = new Intent(getActivity(), DetailActivity.class)
+                            //.setData(TwitmixContract.TwitmixEntry.buildTwitmixCategoryWithId(categorySetting, postId));
+                    ((Callback) getActivity())
+                            .onItemSelected(TwitmixContract.TwitmixEntry
+                                    .buildTwitmixCategoryWithId(categorySetting, cursor.getString(COL_TWITMIX_ID)));
+
+                    //startActivity(intent);
                 }
             }
         });

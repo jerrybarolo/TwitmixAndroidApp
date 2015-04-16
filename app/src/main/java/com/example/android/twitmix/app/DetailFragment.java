@@ -1,4 +1,4 @@
-package com.example.android.twitmix.app.data;
+package com.example.android.twitmix.app;
 
 /**
  * Created by jerrybarolo on 15/04/15.
@@ -6,6 +6,7 @@ package com.example.android.twitmix.app.data;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -23,7 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.twitmix.app.R;
+import com.example.android.twitmix.app.data.TwitmixContract;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -32,11 +33,13 @@ import com.squareup.picasso.Picasso;
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
+    static final String DETAIL_URI = "URI";
 
     private static final String TWITMIX_SHARE_HASHTAG = " #TwitmixApp";
 
     private ShareActionProvider mShareActionProvider;
     private String mTwitmixStr;
+    private Uri mUri;
 
     private static final int DETAIL_LOADER = 0;
 
@@ -72,6 +75,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mImageView = (ImageView) rootView.findViewById(R.id.imageView_id);
         mTitleView = (TextView) rootView.findViewById(R.id.detail_title_id);
@@ -114,25 +123,35 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         super.onActivityCreated(savedInstanceState);
     }
 
+
+    void onCategoryChanged( String newCategory ) {
+        // replace the uri, since the category has changed
+        Uri uri = mUri;
+        if (null != uri) {
+                String postId = TwitmixContract.TwitmixEntry.getIdFromUri(uri);
+                Uri updatedUri = TwitmixContract.TwitmixEntry.buildTwitmixCategoryWithId(newCategory, postId);
+                mUri = updatedUri;
+                getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+            }
+    }
+
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v(LOG_TAG, "In onCreateLoader");
-        Intent intent = getActivity().getIntent();
-        if (intent == null || intent.getData() == null) {
-            return null;
-        }
 
-        // Now create and return a CursorLoader that will take care of
-        // creating a Cursor for the data being displayed.
-        return new CursorLoader(
-                getActivity(),
-                intent.getData(),
-                TWITMIX_COLUMNS,
-                null,
-                null,
-                null
-        );
+        if(null != mUri) {
+            return new CursorLoader(
+                    getActivity(),
+                    mUri,
+                    TWITMIX_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
+        }
+        return null;
     }
+
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
