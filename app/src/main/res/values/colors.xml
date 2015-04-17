@@ -3,5 +3,8 @@
 
     <color name="grey">#cccccc</color>
     <color name="twitmix_light_blue">#ff64c2f4</color>
+    <color name="twitmix_blue">#ff1ca8f4</color>
+    <color name="twitmix_dark_blue">#0288D1</color>
+    <color name="twitmix_black">#111111</color>
 
 </resources>

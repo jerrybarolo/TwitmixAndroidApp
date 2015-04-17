@@ -3,11 +3,27 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/twitmix_black</item>
+        <item name="colorPrimaryDark">@color/twitmix_black</item>
+    </style>
+
+    <!-- Main activity theme. -->
+    <style name="TwitmixTheme" parent="AppTheme">
+        <item name="actionBarStyle">@style/ActionBar.Solid.Twitmix.NoTitle</item>
+    </style>
+
+    <!-- Settings activity theme. -->
+    <style name="SettingsTheme" parent="AppTheme">
+    </style>
+
+    <!-- main activity action bar styles -->
+    <style name="ActionBar.Solid.Twitmix.NoTitle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="displayOptions">useLogo|showHome</item>
+        <item name="logo">@drawable/logotwitmix</item>
     </style>
 
     <style name="TwitmixListStyle">
     <!-- Here it's a stub.  In screens of sufficient width, this style includes modifications
         for two-pane layout -->
     </style>
-
 </resources>

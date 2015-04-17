@@ -30,6 +30,7 @@ public class PostFragment extends Fragment implements LoaderManager.LoaderCallba
     private TwitmixAdapter mTwitmixAdapter;
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
+    private boolean mUseLastPostLayout = true;
 
     private static final String SELECTED_KEY = "selected_position";
 
@@ -147,6 +148,8 @@ public class PostFragment extends Fragment implements LoaderManager.LoaderCallba
             mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
 
+        mTwitmixAdapter.setUseLastPostLayout(mUseLastPostLayout);
+
         return rootView;
     }
 
@@ -207,7 +210,14 @@ public class PostFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
         mTwitmixAdapter.swapCursor(null);
+    }
+
+    public void setUseLastPostLayout(boolean useLastPostLayout) {
+        mUseLastPostLayout = useLastPostLayout;
+        if (mTwitmixAdapter != null) {
+            mTwitmixAdapter.setUseLastPostLayout(mUseLastPostLayout);
+            }
     }
 }

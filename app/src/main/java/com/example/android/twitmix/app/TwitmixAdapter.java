@@ -31,6 +31,8 @@ public class TwitmixAdapter extends CursorAdapter {
     private static final int VIEW_TYPE_LAST_POST = 0;
     private static final int VIEW_TYPE_OLDER_POST = 1;
 
+    private boolean mUseLastPostLayout = true;
+
     /**
      * Cache of the children views for a list item.
      */
@@ -94,9 +96,13 @@ public class TwitmixAdapter extends CursorAdapter {
                 " - " + cursor.getString(PostFragment.COL_TWITMIX_DATE).substring(0,10));
     }
 
+    public void setUseLastPostLayout(boolean useLastPostLayout) {
+        mUseLastPostLayout = useLastPostLayout;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? VIEW_TYPE_LAST_POST : VIEW_TYPE_OLDER_POST;
+        return (position == 0 && mUseLastPostLayout) ? VIEW_TYPE_LAST_POST : VIEW_TYPE_OLDER_POST;
     }
 
     @Override

@@ -36,8 +36,14 @@ public class MainActivity extends ActionBarActivity implements PostFragment.Call
         else
         {
             mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
         }
+
+        PostFragment postFragment =  ((PostFragment)getSupportFragmentManager()
+                                .findFragmentById(R.id.fragment_post));
+        postFragment.setUseLastPostLayout(!mTwoPane);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
