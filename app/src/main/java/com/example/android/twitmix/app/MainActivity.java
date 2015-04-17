@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.twitmix.app.sync.TwitmixSyncAdapter;
+
 
 public class MainActivity extends ActionBarActivity implements PostFragment.Callback {
 
@@ -42,6 +44,8 @@ public class MainActivity extends ActionBarActivity implements PostFragment.Call
         PostFragment postFragment =  ((PostFragment)getSupportFragmentManager()
                                 .findFragmentById(R.id.fragment_post));
         postFragment.setUseLastPostLayout(!mTwoPane);
+
+        TwitmixSyncAdapter.initializeSyncAdapter(this);
     }
 
 

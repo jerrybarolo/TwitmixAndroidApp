@@ -44,4 +44,8 @@
 
     <string name="pref_category_concerts" translatable="true">concerti-live</string>
 
+    <!-- SyncAdapter related -->
+    <string name="sync_account_type">twitmix.example.com</string>
+    <string name="content_authority">com.example.android.twitmix.app</string>
+
 </resources>

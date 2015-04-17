@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.twitmix.app.data.TwitmixContract;
+import com.example.android.twitmix.app.sync.TwitmixSyncAdapter;
 
 /**
  * Encapsulates fetching the data and displaying it as a {@link ListView} layout.
@@ -166,9 +167,11 @@ public class PostFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void updatePost() {
-        FetchTwitmixTask postTask = new FetchTwitmixTask(getActivity());
-        String category = Utility.getPreferredCategory(getActivity());
-        postTask.execute(category);
+        //FetchTwitmixTask postTask = new FetchTwitmixTask(getActivity());
+        //String category = Utility.getPreferredCategory(getActivity());
+        //postTask.execute(category);
+
+        TwitmixSyncAdapter.syncImmediately(getActivity());
     }
 
     @Override
