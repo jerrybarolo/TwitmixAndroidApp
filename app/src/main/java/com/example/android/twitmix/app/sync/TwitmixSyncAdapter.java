@@ -10,11 +10,13 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -330,35 +332,42 @@ public class TwitmixSyncAdapter extends AbstractThreadedSyncAdapter {
     private void notifyPost() {
         Context context = getContext();
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String categoryQuery = Utility.getPreferredCategory(context);
 
-        // Define the text of the forecast.
-        String contentText = "New Post in " + categoryQuery;
+        String displayNotificationsKey = context.getString(R.string.pref_enable_notifications_key);
+        boolean displayNotifications = prefs.getBoolean(displayNotificationsKey,
+                Boolean.parseBoolean(context.getString(R.string.pref_enable_notifications_default)));
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
-                .setContentTitle("TwitMix Notify : ")
-                .setContentText(contentText);
+        if ( displayNotifications ) {
+            // Define the text of the forecast.
+            String contentText = "New Post in " + categoryQuery;
 
-        // Make something interesting happen when the user clicks on the notification.
-        // In this case, opening the app is sufficient.
-        Intent resultIntent = new Intent(context, MainActivity.class);
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
+                    .setContentTitle("TwitMix Notify : ")
+                    .setContentText(contentText);
 
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-        stackBuilder.getPendingIntent(
-        0,
-        PendingIntent.FLAG_UPDATE_CURRENT
-        );
-        mBuilder.setContentIntent(resultPendingIntent);
+            // Make something interesting happen when the user clicks on the notification.
+            // In this case, opening the app is sufficient.
+            Intent resultIntent = new Intent(context, MainActivity.class);
 
-        NotificationManager mNotificationManager =
-        (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        // POST_NOTIFICATION_ID allows you to update the notification later on.
-        mNotificationManager.notify(POST_NOTIFICATION_ID, mBuilder.build());
+            // The stack builder object will contain an artificial back stack for the
+            // started Activity.
+            // This ensures that navigating backward from the Activity leads out of
+            // your application to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                       0,
+                       PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            mBuilder.setContentIntent(resultPendingIntent);
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            // POST_NOTIFICATION_ID allows you to update the notification later on.
+            mNotificationManager.notify(POST_NOTIFICATION_ID, mBuilder.build());
+        }
     }
 }
