@@ -167,10 +167,6 @@ public class PostFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void updatePost() {
-        //FetchTwitmixTask postTask = new FetchTwitmixTask(getActivity());
-        //String category = Utility.getPreferredCategory(getActivity());
-        //postTask.execute(category);
-
         TwitmixSyncAdapter.syncImmediately(getActivity());
     }
 

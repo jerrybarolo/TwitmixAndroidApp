@@ -2,18 +2,24 @@ package com.example.android.twitmix.app.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import com.example.android.twitmix.app.MainActivity;
 import com.example.android.twitmix.app.R;
 import com.example.android.twitmix.app.Utility;
 import com.example.android.twitmix.app.data.TwitmixContract;
@@ -41,6 +47,19 @@ public class TwitmixSyncAdapter extends AbstractThreadedSyncAdapter {
     // 60 seconds (1 minute) * 180 = 3 hours
     public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
+
+    private static final int POST_NOTIFICATION_ID = 3004;
+
+    private static final String[] NOTIFY_TWITMIX_PROJECTION = new String[] {
+        TwitmixContract.TwitmixEntry.COLUMN_TITLE,
+        TwitmixContract.TwitmixEntry.COLUMN_CATEGORY,
+
+    };
+
+    // these indices must match the projection
+    private static final int INDEX_TWITMIX_TITLE = 0;
+    private static final int INDEX_CATEGORY = 1;
+
 
     public TwitmixSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -104,7 +123,13 @@ public class TwitmixSyncAdapter extends AbstractThreadedSyncAdapter {
             if ( cVVector.size() > 0 ) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
-                getContext().getContentResolver().bulkInsert(TwitmixContract.TwitmixEntry.CONTENT_URI, cvArray);
+
+                int inserted = getContext().getContentResolver().bulkInsert(TwitmixContract.TwitmixEntry.CONTENT_URI, cvArray);
+
+                // Notify if new post is added to database
+                if(inserted > 0) {
+                    notifyPost();
+                }
             }
 
         } catch (JSONException e) {
@@ -300,5 +325,40 @@ public class TwitmixSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public static void initializeSyncAdapter(Context context) {
         getSyncAccount(context);
+    }
+
+    private void notifyPost() {
+        Context context = getContext();
+
+        String categoryQuery = Utility.getPreferredCategory(context);
+
+        // Define the text of the forecast.
+        String contentText = "New Post in " + categoryQuery;
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
+                .setContentTitle("TwitMix Notify : ")
+                .setContentText(contentText);
+
+        // Make something interesting happen when the user clicks on the notification.
+        // In this case, opening the app is sufficient.
+        Intent resultIntent = new Intent(context, MainActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+        stackBuilder.getPendingIntent(
+        0,
+        PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotificationManager =
+        (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        // POST_NOTIFICATION_ID allows you to update the notification later on.
+        mNotificationManager.notify(POST_NOTIFICATION_ID, mBuilder.build());
     }
 }

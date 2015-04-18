@@ -3,8 +3,6 @@
 
     <!--
          Used in Action Bar, and in AndroidManifest to tell the device the name of this app.
-         It's to keep this short, so your launcher icon isn't displayed with "The greatest Wea"
-         or something similar.
     -->
     <string name="app_name">TwitMix</string>
 
@@ -16,30 +14,30 @@
     <string name="action_map">Map Location</string>
     <string name="action_share">Share</string>
 
-    <!-- Menu label to fetch updated weather info from the server -->
+    <!-- Menu label to fetch updated data info from the server -->
     <string name="action_refresh" translatable="false">Refresh</string>
     <string name="title_activity_detail">Details</string>
     <string name="title_activity_settings">Settings</string>
 
 
-    <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
+    <!-- Label for the category units preference [CHAR LIMIT=30] -->
     <string name="pref_category_label">Category</string>
 
-    <!-- Label for metric option in temperature unit preference [CHAR LIMIT=25] -->
+    <!-- Label for category option in category unit preference [CHAR LIMIT=25] -->
     <string name="pref_category_label_news">News</string>
 
-    <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
+    <!-- Label for category option in category unit preference [CHAR LIMIT=25] -->
     <string name="pref_category_label_interviews">Interviste</string>
 
     <string name="pref_category_label_concerts">Concerti</string>
 
-    <!-- Key name for temperature unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
+    <!-- Key name for category preference in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_category_key" translatable="true">category</string>
 
-    <!-- Value in SharedPreferences for metric temperature unit option [CHAR LIMIT=NONE] -->
+    <!-- Value in SharedPreferences for category unit option [CHAR LIMIT=NONE] -->
     <string name="pref_category_news" translatable="true">news</string>
 
-    <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
+    <!-- Value in SharedPreferences for category option [CHAR LIMIT=NONE] -->
     <string name="pref_category_interviews" translatable="true">interviste</string>
 
     <string name="pref_category_concerts" translatable="true">concerti-live</string>
@@ -47,5 +45,8 @@
     <!-- SyncAdapter related -->
     <string name="sync_account_type">twitmix.example.com</string>
     <string name="content_authority">com.example.android.twitmix.app</string>
+
+    <!-- Strings related to Notification preference -->
+    <string name="pref_last_notification">last_notification</string>
 
 </resources>
