@@ -175,6 +175,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mAuthorView.setText(author + " " + date);
         mContentView.setText(content);
 
+        mTwitmixStr = title + " di " + author;
+
         // If onCreateOptionsMenu has already happened, we need to update the share intent now.
         if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(createShareTwitmixIntent());
