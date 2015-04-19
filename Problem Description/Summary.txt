@@ -1,0 +1,2 @@
+The App takes data using the Wordpress JSON plugin from my wife's site www.twitmix.it.
+This App will be the substitute of the one called TwitMix Project created by Good Barber service.
